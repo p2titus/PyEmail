@@ -16,19 +16,38 @@ class Server:
             self.__loop()
 
     def __loop(self):
-        BSIZE = 1024
         HOST = '127.0.0.1'
         PORT = 65432  # arbritrary - we're using telnet atm so security not a concern yet
         END = '.'  # phrase that ends server
 
         s = self.__s
+        s.bind((HOST, PORT))
         finished = False
 
         while not finished:
-            content = ''
-            fst = True
-            s.listen()
-            conn, addr = s.accept()
-            
+            x = self.__listen(s, 'email address please')
+            finished = x == END
 
         s.close()
+
+    @staticmethod
+    def __listen(s: socket, init_msg: str) -> str:
+        BSIZE = 1024
+        acc = ''
+
+        s.listen()
+        con, addr = s.accept()
+
+        if init_msg is not None:
+            con.send(init_msg)
+
+        with con:
+            fresh_data = True
+            while fresh_data:
+                data = con.recv(BSIZE)
+                if not data:
+                    fresh_data = False
+                else:
+                    acc += data
+
+        return data
