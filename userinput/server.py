@@ -34,10 +34,11 @@ class Server:
         while not finished:
             f = lambda x: self.__listen(s, x)
             print('start')
-            x = f('email address please')
+            email = f('email address please')
             finished = x == END
             if not finished:
-                y = f('email message please')
+                msg = f('email message please')
+                send_email.send_email(email, msg)
 
 
         s.close()
