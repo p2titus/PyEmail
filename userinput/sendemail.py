@@ -8,7 +8,7 @@ class Emailer:
     __ks: [dict] = None
 
     def __init__(self):
-        KEYS_NAME = 'email_keys.json'
+        KEYS_NAME = '../keys.json'
         ks = self.__load_keys(KEYS_NAME)
         accs = []
         for k in ks:
