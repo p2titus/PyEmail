@@ -22,7 +22,7 @@ class Server:
     def __loop(self):
         HOST = '127.0.0.1'
         PORT = 65432  # arbritrary - we're using telnet atm so security not a concern yet
-        END = '.'  # phrase that ends server
+        END = '.\n\r'  # phrase that ends server
 
         s = self.__s
         hp = HOST, PORT
@@ -35,12 +35,10 @@ class Server:
             f = lambda x: self.__listen(s, x)
             print('start')
             email = f('email address please')
-            finished = x == END
+            finished = email == END
             if not finished:
                 msg = f('email message please')
                 send_email.send_email(email, msg)
-
-
         s.close()
 
     # TODO - rewrite to accept arbitrarily long strings
