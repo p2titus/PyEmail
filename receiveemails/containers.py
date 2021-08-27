@@ -13,3 +13,4 @@ class Email:
     receivers: [(ID, Account)]
     subject: str
     body: str
+    from_this: bool
