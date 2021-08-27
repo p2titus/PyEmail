@@ -16,8 +16,7 @@ class StoreEmail:
     from_this is supposed to represent whether email is to or from a user's email address or elsewhere
     """
     def create_db(self):
-        c = self.__con.cursor()
-        c.execute("""
+        query = """
         CREATE TABLE address(
             local TEXT NOT NULL,
             domain TEXT NOT NULL,
@@ -45,8 +44,32 @@ class StoreEmail:
                     ON UPDATE CASCADE
             FOREIGN KEY (
         );
-        """)
-        self.__con.commit()
+        """
+        self.__execute(query)
 
-    def store_emails(self, es):
-        pass
+    def store_emails(self, es: [Email]):
+        base = "INSERT INTO "
+        return None
+
+    def load_emails(self):
+        query = "SELECT * FROM email"
+        return self.__execute(query, fetch=True)
+
+    """Executes a query on the database"""
+    def __execute(self, query, fetch=False):
+        return self.__execute_with_con(query, self.__con, fetch)
+
+    @staticmethod
+    def __execute_with_con(queries, con, fetch=False):
+        x = None
+        c = con.cursor()
+        for query in queries:
+            c.execute(query)
+        if fetch is True:
+            x = c.fetchall()
+        c.close()
+        return x
+
+    def close(self):
+        self.__con.close()
+
