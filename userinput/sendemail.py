@@ -25,7 +25,6 @@ class Emailer:
 
     def send_email(self, addr, msg):
         ks = filter(lambda x: x['addr'] == addr, self.__ks)
-        k = ks.__next__()
         try:
             self.__email(ks.__next__(), addr, msg)
         except StopIteration:

@@ -1,5 +1,5 @@
 import socket
-import send_email
+import sendemail
 # we just use localhost for security: this is essentially opening a telnet port on our machine
 import os
 
@@ -18,6 +18,10 @@ class Server:
         """pid = os.fork()
         if pid == 0:  # if new process
             self.__loop()"""
+
+    @staticmethod
+    async def tick(rate):
+        pass
 
     def __loop(self):
         HOST = '127.0.0.1'
@@ -38,7 +42,7 @@ class Server:
             finished = email == END
             if not finished:
                 msg = f('email message please')
-                send_email.send_email(email, msg)
+                sendemail.send_email(email, msg)
         s.close()
 
     # TODO - rewrite to accept arbitrarily long strings
