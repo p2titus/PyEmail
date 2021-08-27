@@ -1,11 +1,11 @@
 import sqlite3
-
+from containers import *
 
 class StoreEmail:
     __con = None
 
     def __init__(self):
-        DB_NAME = 'email_storage.db'
+        db_name = 'email_storage.db'
         self.__con = sqlite3.connect(DB_NAME)
 
     """
@@ -30,6 +30,7 @@ class StoreEmail:
             subject TEXT,
             body TEXT NOT NULL,
             from_this BOOLEAN,
+            PRIMARY KEY(id)
             FOREIGN KEY (addr_local, addr_domain)
                 REFERENCES address (local, domain)
                     ON UPDATE CASCADE
@@ -39,17 +40,37 @@ class StoreEmail:
             email_id INTEGER NOT NULL,
             addr_local TEXT NOT NULL,
             addr_domain TEXT NOT NULL,
+            PRIMARY KEY (email_id, addr_local, addr_domain)
             FOREIGN KEY (addr_local, addr_domain)
                 REFERENCES address (local, domain)
                     ON UPDATE CASCADE
-            FOREIGN KEY (
+            FOREIGN KEY (email_id)
+                REFERENCES email (id)
+                    ON UPDATE CASCADE
         );
         """
         self.__execute(query)
 
     def store_emails(self, es: [Email]):
-        base = "INSERT INTO "
-        return None
+        address_insertions = self.__gen_addr_insertions(es)
+        email_insertions = self.__gen_email_insertions(es)
+        recipient_insertions = self.__gen_recipient_insertions(es)
+        full_queries = address_insertions.append(email_insertions.append(recipient_insertions))
+        self.__execute(full_queries)
+
+    def __gen_addr_insertions(self, es: [Email], recurse=False):
+        insertions = []
+        for e in es:
+            if recurse is False:
+                a = e.sender
+                x = self.__gen_addr_insertions(e.recipients, recurse=True)  # python has a slightly loose type system
+                insertions.append(x)
+            elif recurse is True:
+                b, a = e
+            insertion = "INSERT INTO address(?, ?)", (a.local, a.domain)
+            insertions.append(insertion)
+
+        return insertions
 
     def load_emails(self):
         query = "SELECT * FROM email"
