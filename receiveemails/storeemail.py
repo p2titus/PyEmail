@@ -58,19 +58,47 @@ class StoreEmail:
         full_queries = address_insertions.append(email_insertions.append(recipient_insertions))
         self.__execute(full_queries)
 
-    def __gen_addr_insertions(self, es: [Email], recurse=False):
+    @staticmethod
+    def __gen_addr_insertions(es: [Email], recurse=False):
         insertions = []
         for e in es:
             if recurse is False:
                 a = e.sender
-                x = self.__gen_addr_insertions(e.recipients, recurse=True)  # python has a slightly loose type system
+                # recursive call deals with all recipients
+                x = StoreEmail.__gen_addr_insertions(e.recipients, recurse=True)
                 insertions.append(x)
-            elif recurse is True:
+            else:  # if recurse is True:
                 b, a = e
             insertion = "INSERT INTO address(?, ?)", (a.local, a.domain)
             insertions.append(insertion)
 
         return insertions
+
+    # basic idea outlined in __gen_addr_insertions - this implementation has less informative variable names
+    @staticmethod
+    def __gen_email_insertions(es: [Email]):
+        acc = []
+
+        for e in es:
+            s = e.sender
+            if e.from_this is True:
+                ft = 1
+            else:
+                ft = 0
+            x = "INSERT INTO email(?, ?, ?, ?, ?)", (s.local, s.domain, e.subject, e.body, ft)
+            acc.append(x)
+
+        return acc
+
+    # TODO - this
+    @staticmethod
+    def __gen_recipient_insertions(es: [Email]):
+        acc = []
+
+        for e in es:
+            pass
+
+        return acc
 
     def load_emails(self):
         query = "SELECT * FROM email"
