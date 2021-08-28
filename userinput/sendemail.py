@@ -23,6 +23,9 @@ class Emailer:
         f.close()
         return x
 
+    """
+    Sends an email with the specified message from a specified address
+    """
     def send_email(self, addr, msg):
         ks = filter(lambda x: x['addr'] == addr, self.__ks)
         try:
