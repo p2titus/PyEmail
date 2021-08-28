@@ -5,6 +5,15 @@ import smtplib, ssl
 
 
 class Emailer:
+    """
+    A quick explanation of how Emailer is implemented
+    We load our keys from an external json file
+    This json file contains addresses, passwords and domain names for the addresses we use with the server
+    These keys are stored in ks and used when required
+    To refresh these keys, the Emailer object can be dropped and recreated - there is no other state stored
+
+    See receiveemails/receiveemail.py for another copied implementation
+    """
     __ks: [dict] = None
 
     def __init__(self):
