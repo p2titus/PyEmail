@@ -1,5 +1,5 @@
 import poplib
-
+from containers import *
 
 """
 Recall POP downloads email from a (remote) server and deletes them from the server once received
@@ -13,6 +13,7 @@ No other class should receive email except by calling methods from this class
 
 class EmailReceiver:
     __DEBUG_LVL = 0  # use 0 for prod
+    __ks: [dict] = None
 
     # for an explanation, see the almost identical code in userinput/sendemail.py
     def __init__(self):
@@ -30,3 +31,42 @@ class EmailReceiver:
         x = load(f)
         f.close()
         return x
+
+    class Account:
+        local: str
+        pwd: str
+        domain: str
+
+    # as a postcondition, we assert that all emails on the server that we've downloaded are deleted
+    def read_emails(self) -> [Email]:
+        accounts = self.__ks
+        acc = []
+
+        for a in accounts:
+            x = Account()
+            x.local = a['addr']
+            x.domain = a['type']
+            x.pwd = a['keys']
+
+            es = self.__get_updates_account(x)
+            acc.append(es)
+
+        return acc
+
+    @staticmethod
+    def __get_updates_account(a: Account) -> [Email]:
+        es = []
+        port = 995
+        mb = poplib.POP3_SSL(a.domain, port)
+        mb.user(a.local)
+        mb.pass_(a.pwd)
+
+        for msg in mb.retr(0):
+            es += EmailReceiver.__emailify(msg)
+
+        return es
+
+    # TODO - write methodcd
+    @staticmethod
+    def __emailify(msg):
+        pass
