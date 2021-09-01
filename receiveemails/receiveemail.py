@@ -13,7 +13,7 @@ No other class should receive email except by calling methods from this class
 
 class EmailReceiver:
     __DEBUG_LVL = 0  # use 0 for prod
-    __ks: [dict] = None
+    __ks: [(str, str, str)] = None
 
     # for an explanation, see the almost identical code in userinput/sendemail.py
     def __init__(self, get_keys):
@@ -31,9 +31,7 @@ class EmailReceiver:
 
         for a in accounts:
             x = Account()
-            x.local = a['addr']
-            x.domain = a['type']
-            x.pwd = a['keys']
+            x.local, x.domain, x.pwd = a
 
             es = self.__get_updates_account(x)
             acc.append(es)
