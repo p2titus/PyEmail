@@ -16,21 +16,8 @@ class EmailReceiver:
     __ks: [dict] = None
 
     # for an explanation, see the almost identical code in userinput/sendemail.py
-    def __init__(self):
-        KEYS_NAME = '../keys.json'
-        ks = self.__load_keys(KEYS_NAME)
-        accs = []
-        for k in ks:
-            accs.append((k['addr'], k['type'], k['keys']))
-        self.__ks = accs
-
-    @staticmethod
-    def __load_keys(keys_file_name):
-        from json import load
-        f = open(keys_file_name)
-        x = load(f)
-        f.close()
-        return x
+    def __init__(self, get_keys):
+        self.__ks = get_keys()
 
     class Account:
         local: str
@@ -64,9 +51,10 @@ class EmailReceiver:
         for msg in mb.retr(0):
             es += EmailReceiver.__emailify(msg)
 
+        mb.quit()
         return es
 
-    # TODO - write methodcd
+    # TODO - write method
     @staticmethod
     def __emailify(msg):
         pass
