@@ -8,6 +8,7 @@ from load_keys import load_account_details
 from receiveemails import EmailReceiver
 from userinput import SenderServer
 
+
 def run_server():
     default_fname = "keys.json"
     print('leave blank for default file')

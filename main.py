@@ -1,5 +1,4 @@
-from userinput import server
+from controller import run_server
 
 if __name__ == '__main__':
-    s = server.Server()
-    s.main_loop()
+    run_server()
