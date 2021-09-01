@@ -14,9 +14,11 @@ class Emailer:
 
     See receiveemails/receiveemail.py for another copied implementation
     """
-    __ks: [dict] = None
+    __ks: (str, str, str) = None
 
-    def __init__(self):
+    def __init__(self, load_keys):
+        self.__ks = load_keys()
+        """
         KEYS_NAME = '../keys.json'
         ks = self.__load_keys(KEYS_NAME)
         accs = []
@@ -30,13 +32,13 @@ class Emailer:
         f = open(keys_file_name)
         x = load(f)
         f.close()
-        return x
+        return x"""
 
     """
     Sends an email with the specified message from a specified address
     """
     def send_email(self, addr, msg):
-        ks = filter(lambda x: x['addr'] == addr, self.__ks)
+        ks = filter(lambda x: x['addr'] == addr, self.__ks)  # TODO - type mismatch
         try:
             self.__email(ks.__next__(), addr, msg)
         except StopIteration:

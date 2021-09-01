@@ -4,7 +4,7 @@ import sendemail
 import os
 
 
-class Server:
+class SenderServer:
     __s = None
 
     def __init__(self):
@@ -13,20 +13,18 @@ class Server:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.__s = s
 
-    def main_loop(self):
-        self.__loop()
+    def main_loop(self, get_keys):
+        self.__loop(get_keys)
         """pid = os.fork()
         if pid == 0:  # if new process
             self.__loop()"""
 
-    @staticmethod
-    async def tick(rate):
-        pass
-
-    def __loop(self):
+    def __loop(self, gk):
         HOST = '127.0.0.1'
         PORT = 65432  # arbritrary - we're using telnet atm so security not a concern yet
         END = '.\n\r'  # phrase that ends server
+
+        emailer = sendemail.Emailer(lambda: gk())
 
         s = self.__s
         hp = HOST, PORT
