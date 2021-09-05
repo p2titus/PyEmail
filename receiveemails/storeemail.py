@@ -4,9 +4,8 @@ from containers import *
 class StoreEmail:
     __con = None
 
-    def __init__(self):
-        db_name = 'email_storage.db'
-        self.__con = sqlite3.connect(DB_NAME)
+    def __init__(self, db_name='email_storage.db'):
+        self.__con = sqlite3.connect(db_name)
 
     """
     basic table layout
